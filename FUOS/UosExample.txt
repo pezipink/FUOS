@@ -1,0 +1,122 @@
+// bagcore 
+
+if not findalias 'enemypack'
+  if inrange 'last' 1
+    @findlayer 'last' 21
+    @setalias 'enemypack' 'found'
+    useobject 'enemypack'
+    // first run, execute bag unfolding from parent bag
+    @createlist 'bags'
+    @createlist 'processedBags'
+    pushlist 'bags' 'enemypack'
+    playmacro 'processBagsRec'
+  else
+    sysmsg "no last targ found"
+    if listexists 'toSteal'
+      removelist 'toSteal'
+    endif
+    playmacro 'cleanUp'
+  endif
+else
+  // got all bags, now call the function that does something on them
+  playmacro callback[0]
+endif
+
+
+// cleanup 
+
+clearignorelist
+@removelist 'bags'
+@removelist 'processedBags'
+@removelist 'bt'
+@unsetalias 'currentbag'
+@unsetalias 'found'
+@unsetalias 'enemypack'
+@removelist 'callback'
+
+
+// combat steal 
+
+// if it's a warrior then kitty wouuld be going for their aids
+// otherswise woudl likely go for cure regs
+if @findobject 'lefthand' or @findobject 'righthand'
+  clearhands 'both'
+endif
+createlist 'toSteal'
+pushlist 'toSteal' '0xf62'    // spear
+pushlist 'toSteal' '0x1401'   // kryss
+pushlist 'toSteal' '0x1405'   // fork
+pushlist 'toSteal' '0x1403'   // short spear
+pushlist 'toSteal' '0x13ff'   // kat
+pushlist 'toSteal' '0x13b6'   // scimtar
+pushlist 'toSteal' '0x13b9'   // viking
+pushlist 'toSteal' '0xf5e'   // broadsword
+pushlist 'toSteal' '0xf61'   // longsword
+pushlist 'toSteal' '0x13b2'   // bow
+pushlist 'toSteal' '0xF502'   // xbow
+pushlist 'toSteal' '0x13fb'   // large b axe
+pushlist 'toSteal' '0xf4b'   // d axe
+pushlist 'toSteal' '0xf49'   // axe
+pushlist 'toSteal' '0xf43'   // hatchet
+pushlist 'toSteal' '0xf5c'   // mace
+pushlist 'toSteal' '0x143b'   // maul
+pushlist 'toSteal' '0x1407'   // war mace
+pushlist 'toSteal' '0xe21'    // bandies
+createlist 'callback'
+pushlist 'callback' 'stealItem'
+playmacro 'bagCore'
+
+
+
+// processBagsRec 
+
+if not listexists 'bt'
+  createlist 'bt'
+  pushlist 'bt' '0xe75'  // backpack
+  pushlist 'bt' '0xe79'  // pouch
+  pushlist 'bt' '0xe76'  // bag
+endif
+if list 'bags' > 0
+  // the bags list contains all bags that are still to be processed
+  // pop the first one from the list and push it to the processed bag list
+  @setalias 'currentbag' bags[0]
+  poplist 'bags' 'front'
+  pushlist 'processedBags' 'currentbag' 'back'
+  // find all other suitable bag types in this bag and add them
+  // to the processing list
+  for 0 in 'bt'
+    while @findtype bt[] 'any' 'currentbag'
+      pushlist 'bags' 'found' 'back'
+      @ignoreobject 'found'
+    endwhile
+  endfor
+  // call this macro recusrively until we run out of bags in bags
+  playmacro 'processBagsRec'
+else
+  // finish recursive processing, return to main function with unfolded bag list
+  playmacro 'bagCore'
+endif
+
+
+
+// stealitem
+
+for 0 to 'toSteal'
+  for 0 to 'processedBags'
+    if @findtype toSteal[] 'any' processedBags[]
+      setalias 'prev' 'last'
+      useskill 'Stealing'
+      waitfortarget 4000
+      target! 'found'
+      clearlist 'toSteal'
+      @setalias 'last' 'prev'
+      @unsetalias 'prev'
+      break
+    endif
+  endfor
+  if list 'toSteal' == 0
+    break
+  endif
+endfor
+removelist 'toSteal'
+playmacro 'cleanUp'

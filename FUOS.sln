@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FUOS", "FUOS\FUOS.fsproj", "{8449DE25-89CC-48B4-B558-7A2659B5003D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8449DE25-89CC-48B4-B558-7A2659B5003D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8449DE25-89CC-48B4-B558-7A2659B5003D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8449DE25-89CC-48B4-B558-7A2659B5003D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8449DE25-89CC-48B4-B558-7A2659B5003D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
